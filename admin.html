@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Secret Between Us — Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:20px;background:#0d1020;color:#fff;font-family:system-ui,Arial}.wrap{max-width:900px;margin:auto}.card{background:#191e35;border:1px solid #ffffff18;border-radius:16px;padding:20px;margin:14px 0}h1{color:#c0afff}input{width:100%;padding:13px;margin:8px 0;border-radius:9px;border:1px solid #343b5a;background:#10152a;color:white}button{padding:11px 16px;border:0;border-radius:9px;background:#7958e8;color:white;margin:5px;cursor:pointer}.muted{color:#b8bfd5}.item{border-top:1px solid #343b5a;padding:14px 0;overflow-wrap:anywhere}.answers{white-space:pre-wrap;line-height:1.8}a{color:#c0afff}
+</style></head><body><div class="wrap">
+<h1>Secret Between Us — لوحة التحكم</h1>
+<div class="card" id="login">
+<p class="muted">سجّل الدخول بحساب المدير الذي أنشأته في Supabase.</p>
+<input id="email" type="email" placeholder="البريد الإلكتروني">
+<input id="password" type="password" placeholder="كلمة المرور">
+<button onclick="signIn()">تسجيل الدخول</button><div id="loginStatus" class="muted"></div>
+</div>
+<div id="panel" class="hidden">
+<div class="card"><button onclick="loadData()">تحديث المشاركات</button><button onclick="signOut()">تسجيل الخروج</button><p id="count" class="muted"></p></div>
+<div id="entries"></div>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="PASTE_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY="PASTE_SUPABASE_ANON_KEY";
+const ready=SUPABASE_URL.startsWith("https://")&&!SUPABASE_URL.includes("PASTE_")&&!SUPABASE_ANON_KEY.includes("PASTE_");
+const db=ready?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+if(!ready)document.getElementById("loginStatus").textContent="أضف إعدادات Supabase في هذا الملف أولًا.";
+async function signIn(){if(!db)return;const {error}=await db.auth.signInWithPassword({email:email.value,password:password.value});loginStatus.textContent=error?error.message:"";if(!error){login.classList.add("hidden");panel.classList.remove("hidden");loadData();}}
+async function signOut(){await db.auth.signOut();panel.classList.add("hidden");login.classList.remove("hidden");}
+async function loadData(){
+ const {data,error}=await db.from("submissions").select("*").order("created_at",{ascending:false});
+ if(error){entries.textContent="تعذر تحميل المشاركات: "+error.message;return;}
+ count.textContent=`عدد المشاركات: ${data.length}`;
+ entries.innerHTML="";
+ data.forEach(row=>{
+  const el=document.createElement("section");el.className="card";
+  const date=new Date(row.created_at).toLocaleString("ar-EG");
+  const loc=(row.latitude!==null&&row.longitude!==null)?`<p><a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${encodeURIComponent(row.latitude+","+row.longitude)}">عرض الموقع على Google Maps</a><br><span class="muted">Lat: ${row.latitude} | Lon: ${row.longitude} | الدقة: ${row.accuracy??"غير معروفة"} متر</span></p>`:"<p class='muted'>لم تتم مشاركة موقع لهذه المشاركة.</p>";
+  const answers=(row.answers||[]).map((a,i)=>`${i+1}. ${a.question}\n${a.answer}`).join("\n\n");
+  el.innerHTML=`<h3></h3><p class="muted"></p>${loc}<div class="answers"></div>`;
+  el.querySelector("h3").textContent=row.name||"بدون اسم";
+  el.querySelector("p.muted").textContent=date;
+  el.querySelector(".answers").textContent=answers;
+  entries.appendChild(el);
+ });
+}
+</script></body></html>
