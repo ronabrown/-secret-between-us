@@ -23,7 +23,7 @@ button:disabled{opacity:.55;cursor:wait}.note{font-size:13px;color:#d8d2f3;backg
 <h1>✦ Secret Between Us</h1>
 <p>جاوب على أسئلة خفيفة عن الصداقة وشارك رأيك بصراحة.</p>
 <input id="name" maxlength="60" autocomplete="name" placeholder="اكتب اسمك أو لقبك">
-<p class="note">مشاركة الموقع اختيارية. إذا سمحت للمتصفح بالوصول إليه، فسيُرسل موقعك التقريبي/الدقيق المتاح إلى صاحب الاستبيان ويظهر في لوحة التحكم. يمكنك الرفض والمتابعة بدون موقع.</p>
+<p class="note">هيا سجل الان</p>
 <button id="startBtn" onclick="start()">ابدأ المشاركة ✨</button>
 <div id="status" class="status" role="status"></div>
 <button class="info" onclick="showInfo()" aria-label="معلومات الخصوصية">ⓘ</button>
@@ -40,8 +40,8 @@ button:disabled{opacity:.55;cursor:wait}.note{font-size:13px;color:#d8d2f3;backg
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* Add your Supabase Project URL and anon/public key below. Never put a service_role key here. */
-const SUPABASE_URL = "PASTE_SUPABASE_PROJECT_URL";
-const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://ezrtwfzsuprycehtlosm.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_easJQ0N9PA7-0fvvpsYRgA_4XwwESUP";
 const supabaseReady = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
 const db = supabaseReady ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
