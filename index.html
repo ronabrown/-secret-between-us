@@ -96,7 +96,7 @@ async function next(){
  const btn=document.querySelector("#quiz button");btn.disabled=true;status.textContent="جارٍ إرسال مشاركتك...";
  const payload={name:document.getElementById("name").value.trim(),answers,latitude:locationData?.latitude??null,longitude:locationData?.longitude??null,accuracy:locationData?.accuracy??null};
  const {error}=await db.from("submissions").insert(payload);
- if(error){status.textContent="تعذر الإرسال. تحقق من الاتصال ثم حاول مجددًا.";btn.disabled=false;index=questions.length-1;answers.pop();return;}
+ if(error){status.textContent="خطأ: "+error.message;btn.disabled=false;index=questions.length-1;answers.pop();return;}
  document.getElementById("quiz").classList.add("hidden");document.getElementById("finish").classList.remove("hidden");
 }
 </script>
